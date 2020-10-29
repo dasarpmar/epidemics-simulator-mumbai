@@ -687,10 +687,12 @@ casualty_stats get_infected_community(const vector<agent>& nodes, const communit
   count_type recovered_from_symptomatic = 0;
   count_type recovered_from_hospitalised = 0;
   count_type recovered_from_critical = 0;
+  count_type recovered_from_vaccination = 0;
   count_type hd_area_recovered_from_infective = 0;
   count_type hd_area_recovered_from_symptomatic = 0;
   count_type hd_area_recovered_from_hospitalised = 0;
   count_type hd_area_recovered_from_critical = 0;
+  count_type hd_area_recovered_from_vaccination = 0;
 
   count_type errors = 0;
   
@@ -708,7 +710,8 @@ casualty_stats get_infected_community(const vector<agent>& nodes, const communit
 			recovered, hd_area_recovered,								\
 			recovered_from_infective, recovered_from_symptomatic,		\
 			recovered_from_hospitalised, recovered_from_critical,		\
-			hd_area_recovered_from_infective,							\
+                 	recovered_from_vaccination, hd_area_recovered_from_vaccination
+	                hd_area_recovered_from_infective,				\
 			hd_area_recovered_from_symptomatic,							\
 			hd_area_recovered_from_hospitalised,						\
 			hd_area_recovered_from_critical)
@@ -771,9 +774,15 @@ casualty_stats get_infected_community(const vector<agent>& nodes, const communit
 		  hd_area_recovered_from_critical += 1;
 		}
 		break;
-	  default:
-		errors += 1; //errors state_before_recovery
+	  case Progression::vaccinated:
+		recovered_from_vaccination += 1;
+		if(hd_area_resident){
+		  hd_area_recovered_from_vaccination += 1;
+		}
 		break;
+	  default:
+	        errors += 1; //errors state_before_recovery
+                break;
 	  }
 	}
 	if (infection_status == Progression::hospitalised) {
@@ -795,10 +804,7 @@ casualty_stats get_infected_community(const vector<agent>& nodes, const communit
       }
 	}
   }
-  if(errors){
-	cerr << "erroneous state_before_recovery found\n";
-	assert(false);
-  }
+
   
   affected = exposed + infective + symptomatic
 	+ hospitalised + critical

@@ -505,7 +505,8 @@ enum class Progression {
    recovered,
    hospitalised,
    critical,
-   dead
+   dead,
+   vaccinated
 };
 
 enum class DiseaseLabel{

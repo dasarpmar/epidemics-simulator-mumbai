@@ -212,6 +212,13 @@ plot_data_struct run_simulation(){
 	// Puttting the generator in a critical section can keep it
 	// correct, but slows down the code too much.
 	for(count_type j = 0; j < NUM_PEOPLE; ++j){
+          count_type feb1_num = 337;
+          if ((time_step == ((GLOBAL.CALIBRATION_DELAY + feb1_num) * GLOBAL.SIM_STEPS_PER_DAY))
+              && (nodes[j].age>=60) && (nodes[j].infection_status==Progression::susceptible)){
+		  nodes[j].infection_status = Progression::recovered;
+		  nodes[j].state_before_recovery = Progression::vaccinated;
+	  }
+
 	  auto node_update_status = update_infection(nodes[j], time_step); 
 	  nodes[j].psi_T = psi_T(nodes[j], time_step);
 
